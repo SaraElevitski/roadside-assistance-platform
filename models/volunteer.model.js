@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const VolunteerSchema = new mongoose.Schema({
-  volunteerCode: {
+  _id: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },

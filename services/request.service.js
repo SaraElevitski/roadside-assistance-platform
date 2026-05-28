@@ -16,7 +16,7 @@ class RequestService extends Service {
     }
 
     async assignVolunteerToRequest(requestId, volunteerCode, newStatus) {
-        const volunteer = await this.volunteerRepo.findOne({ volunteerCode: volunteerCode });
+        const volunteer = await this.volunteerRepo.findOne({ _id: volunteerCode });
         //האם המתנדב קיים
         if (!volunteer) {
             const error = new Error("the volunteer not found");

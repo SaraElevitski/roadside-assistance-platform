@@ -20,11 +20,13 @@ class VolunteerService extends Service {
         if (data.specialties)
             newData.specialties = data.specialties
 
+        // צור קוד אוטומטי למתנדב ושמור אותו כ-_id
         let code = this.createCode();
-        while (await this.repo.findOne({ volunteerCode: code })) {
+        while (await this.repo.findOne({ _id: code })) {
             code = this.createCode();
         }
-        newData.volunteerCode = code;
+        newData._id = code;
+
         const item = await this.repo.create(newData);
         if (item, { statusCode: 201, message: "מתנדב נוצר בהצלחה" }) {
 

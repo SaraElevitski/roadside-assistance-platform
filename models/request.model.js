@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 
 const RequestSchema = new mongoose.Schema({
 
-  requestId: {
+  _id: {
     type: Number,
-    required: true,
-    unique: true
+    required: true
   },
 
   location: {

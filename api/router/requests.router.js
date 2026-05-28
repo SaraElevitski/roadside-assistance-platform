@@ -6,6 +6,6 @@ router.get('/',requestController.getAll);
 
 router.get('/:id', requestController.getById);
 
-router.put('/:id/assign', requestController.assignVolunteer);
+router.put('/:id', requestController.assignVolunteer);
 
 module.exports = router;

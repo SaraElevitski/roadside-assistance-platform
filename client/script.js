@@ -1,16 +1,24 @@
 const API_BASE = "http://127.0.0.1:8080/api";
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadAreas();
-    loadRequests(); // טעינה ראשונית
+    initPage();
 });
+
+async function initPage() {
+    await loadAreas();
+    await loadStatuses();
+    await loadPriorities();
+    loadRequests(); // טעינה ראשונית
+}
 
 async function loadAreas() {
     try {
         const res = await fetch(`${API_BASE}/areas`);
+        if (!res.ok) throw new Error(`Failed to load areas (${res.status})`);
         const response = await res.json();
         const select = document.getElementById('filterArea');
-        const areas = response.data || response || [];
+        const areas = response.data || [];
+        select.innerHTML = `<option value="">הכל</option>`;
         areas.forEach(area => {
             const option = document.createElement('option');
             option.value = area.areaCode;
@@ -18,6 +26,40 @@ async function loadAreas() {
             select.appendChild(option);
         });
     } catch (e) { console.error("Error loading areas", e); }
+}
+
+async function loadStatuses() {
+    try {
+        const res = await fetch(`${API_BASE}/statuses`);
+        if (!res.ok) throw new Error(`Failed to load statuses (${res.status})`);
+        const response = await res.json();
+        const select = document.getElementById('filterStatus');
+        const statuses = response.data || [];
+        select.innerHTML = `<option value="">הכל</option>`;
+        statuses.forEach(status => {
+            const option = document.createElement('option');
+            option.value = status;
+            option.textContent = status;
+            select.appendChild(option);
+        });
+    } catch (e) { console.error("Error loading statuses", e); }
+}
+
+async function loadPriorities() {
+    try {
+        const res = await fetch(`${API_BASE}/priorities`);
+        if (!res.ok) throw new Error(`Failed to load priorities (${res.status})`);
+        const response = await res.json();
+        const select = document.getElementById('filterPriority');
+        const priorities = response.data || [];
+        select.innerHTML = `<option value="">הכל</option>`;
+        priorities.forEach(priority => {
+            const option = document.createElement('option');
+            option.value = priority.id;
+            option.textContent = priority.label;
+            select.appendChild(option);
+        });
+    } catch (e) { console.error("Error loading priorities", e); }
 }
 
 async function loadRequests() {
@@ -35,8 +77,9 @@ async function loadRequests() {
 
     try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`Failed to load requests (${res.status})`);
         const response = await res.json();
-        let requests = response.data || response || [];
+        let requests = response.data || [];
 
         // מיון סטטי (ממתין -> בטיפול -> הסתיים)
         if (Array.isArray(requests) && requests.length > 0) {
@@ -114,7 +157,8 @@ async function openVolunteerModal(id) {
                 <hr>
                 <p style="text-align: center; font-weight: bold;">או רשום מתנדב חדש:</p>
                 <input type="text" id="newName" class="form-control" placeholder="שם מלא" style="margin-bottom:5px;">
-                <input type="text" id="newPhone" class="form-control" placeholder="טלפון">
+                <input type="text" id="newPhone" class="form-control" placeholder="טלפון" style="margin-bottom:5px;">
+                <input type="text" id="newVolunteerCode" class="form-control" placeholder="קוד מתנדב (חובה)" style="margin-bottom:5px;">
                 <input type="hidden" id="statusSelect" value="בטיפול">`;
         } else if (req.status === 'בטיפול') {
             authHtml = `
@@ -144,6 +188,7 @@ async function processVolunteer(requestId) {
     const existingId = document.getElementById('volunteerIdInput').value;
     const newName = document.getElementById('newName')?.value;
     const newPhone = document.getElementById('newPhone')?.value;
+    const newVolunteerCode = document.getElementById('newVolunteerCode')?.value;
     const selectedStatus = document.getElementById('statusSelect').value;
     const correctCode = document.getElementById('correctVolunteerCode')?.value;
 
@@ -153,19 +198,28 @@ async function processVolunteer(requestId) {
     }
 
     let finalVolunteerId = existingId;
-    if (!existingId && newName && newPhone) {
+    if (!existingId && newName && newPhone && newVolunteerCode) {
         try {
             const res = await fetch(`${API_BASE}/volunteers`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: newName, phone: newPhone })
+                body: JSON.stringify({ 
+                    firstName: newName, 
+                    phone: newPhone,
+                    volunteerCode: newVolunteerCode
+                })
             });
             const result = await res.json();
             if (res.ok) {
                 finalVolunteerId = result.data?._id || result._id;
                 alert(`נרשמת בהצלחה! קוד: ${finalVolunteerId}`);
+            } else {
+                alert("שגיאה: " + (result.message || "לא ניתן לרשום מתנדב"));
+                return;
             }
         } catch (e) { return alert("שגיאה ברישום"); }
+    } else if (!existingId && (!newName || !newPhone || !newVolunteerCode)) {
+        return alert("חובה למלא את כל השדות (שם, טלפון וקוד מתנדב)");
     }
 
     if (!finalVolunteerId) return alert("חובה להזין קוד מתנדב");
@@ -184,6 +238,7 @@ async function processVolunteer(requestId) {
             alert("שגיאה: " + (err.message || "פעולה נכשלה."));
         }
     } catch (e) { alert("שגיאה בתקשורת"); }
+    closeModal();
 }
 
 function closeModal() { document.getElementById('volunteerModal').style.display = 'none'; }

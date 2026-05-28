@@ -2,14 +2,13 @@ const mongoose = require('mongoose');
 
 const AreaSchema = new mongoose.Schema({
 
-  areaCode: {
+  _id: {
     type: Number,
-    required: true,
-    unique: true
+    required: true
   },
   name: { type: String, required: true }
 
 });
 
 
-module.exports = mongoose.model('Area', AreaSchema, 'area');
+module.exports = mongoose.model('Area', AreaSchema, 'areas');
