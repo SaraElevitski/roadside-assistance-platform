@@ -32,15 +32,19 @@ class Controller {
     }
 
     async findOne(req, res, next) {
-        const code = req.body
+        const data = req.body
         try {
-            const result = await this.service.findOne(code)
+            const result = await this.service.findOne(data)
             return res.status(result.statusCode).json(result)
         }
         catch (err) {
             next(err);
         }
     }
+
+   
+    
+
 
 
     async update(req, res, next) {

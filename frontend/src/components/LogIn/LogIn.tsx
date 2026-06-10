@@ -3,18 +3,30 @@ import "./LogIn.scss";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Form, Button, Card, Container } from "react-bootstrap";
+import volunteersService from "../../services/volunteers.service";
+import { useDispatch } from "react-redux";
+import { logInUser } from "../../redux/slices/userSlice";
 
 interface LogInProps {}
 
 const LogIn: FC<LogInProps> = () => {
+  const dispatch = useDispatch();
+
   const myForm = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (value: any) => {
-      // לבדוק האם קיים המשתמש הזה אם כן dispatch 
-      alert("הכניסה בוצעה!");
+    onSubmit: async (value: any) => {
+      try {
+        const res = await volunteersService.loginVolunteer(value);
+        if (res) {
+          alert("הכניסה בוצעה!");
+          dispatch(logInUser(res.data));
+        }
+      } catch (error: any) {
+        alert("המשתמש לא נמצא הרשם");
+      }
     },
     validationSchema: yup.object().shape({
       email: yup
@@ -27,14 +39,13 @@ const LogIn: FC<LogInProps> = () => {
 
   return (
     <div className="LogIn">
-      <Container >
+      <Container>
         <Card
           className="shadow-sm p-4 bg-light m-auto mt-5"
           style={{ maxWidth: "550px" }}
         >
           <h3 className="mb-4 text-center">כניסה</h3>
           <Form onSubmit={myForm.handleSubmit}>
-            
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>אימייל</Form.Label>
               <Form.Control
@@ -58,7 +69,9 @@ const LogIn: FC<LogInProps> = () => {
                 onChange={myForm.handleChange}
                 onBlur={myForm.handleBlur}
                 name="password"
-                isInvalid={!!(myForm.touched.password && myForm.errors.password)}
+                isInvalid={
+                  !!(myForm.touched.password && myForm.errors.password)
+                }
               />
               <Form.Control.Feedback type="invalid">
                 {myForm.errors.password as string}

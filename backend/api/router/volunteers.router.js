@@ -10,4 +10,6 @@ router.put('/:id', volunteersController.update);
 
 router.delete('/:id', volunteersController.delete);
 
+router.post('/login', volunteersController.findOne);
+
 module.exports = router;

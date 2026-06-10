@@ -1,11 +1,12 @@
 const Service = require('./Service.js');
 const { HttpResponse } = require('../helper/HttpResponse.js');
+const repo = require('../repositories/repository/volunteer.repo.js')
 
 const statuses = ['ממתין', 'בטיפול', 'הסתיים'];
 
 class StatusService extends Service {
     constructor() {
-        super();
+        super(repo);
     }
 
     async getAll() {

@@ -12,6 +12,7 @@ initialState: {
     reducers: {
         logInUser: (state, action: PayloadAction<Volunteer>) => {
             state.user = action.payload
+            
         },
         logOutUser: (state) => {
             state.user = null
