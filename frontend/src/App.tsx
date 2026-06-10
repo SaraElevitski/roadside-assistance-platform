@@ -4,6 +4,7 @@ import Home from './components/Home/Home'
 import LogIn from './components/LogIn/LogIn';
 import MainComp from './components/MainComp/MainComp';
 import SignUp from './components/SignUp/SignUp';
+import NewRequestModal from './components/NewRequestModal/NewRequestModal';
 
 
 function App() {
@@ -18,7 +19,8 @@ function App() {
         <Route index element={<Home></Home>}></Route>
           <Route path='login' element={<LogIn></LogIn>}></Route>
         <Route  path='signUp' element={<SignUp></SignUp>}></Route>
-      </Route>
+        
+      </Route> 
 
       {/* <Route path='*' element={<NotFound></NotFound>}></Route> */}
     </Routes>

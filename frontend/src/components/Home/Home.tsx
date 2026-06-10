@@ -1,11 +1,10 @@
 import { useEffect, useState, type FC } from "react";
 import "./Home.scss";
 import volunteersService from "../../services/volunteers.service";
-import { Card, Row, Col, Button} from "react-bootstrap";
+import { Card, Row, Col, Button } from "react-bootstrap";
 import helpRequestsService from "../../services/helpRequests.service";
 import type { Volunteer } from "../../models/volunteers.model";
-import { priorityLabels, type PriorityType } from "../../models/helpRequests.model";
-
+import {type PriorityType} from "../../models/helpRequest.model";
 
 interface HomeProps {}
 
@@ -13,16 +12,12 @@ const Home: FC<HomeProps> = () => {
   const [listVolunteers, setListVolunteers] = useState<Volunteer[]>([]);
   const [listRequest, setListRequests] = useState<any[]>([]);
 
-
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [
-          volunteersRes,
-          requestsRes
-        ] = await Promise.all([
+        const [volunteersRes, requestsRes] = await Promise.all([
           volunteersService.GetVolunteersList(),
-          helpRequestsService.GetRequestsList()
+          helpRequestsService.GetRequestsList(),
         ]);
 
         setListVolunteers(volunteersRes.data.data);
@@ -35,34 +30,35 @@ const Home: FC<HomeProps> = () => {
     fetchAllData();
   }, []);
 
-  return <div className="Home m-4">
-    <Button variant="danger w-100 mb-4 ">הוספת קריאה</Button>
-       <Row className="g-4">
-      {listRequest && listRequest.map((item) => (
-        <Col key={item._id} xs={12} sm={6} md={3}>
-          <Card className="h-100 shadow-sm"> 
-            <Card.Body>
-              <Card.Title>קריאה {item._id}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">מיקום: {item.location.name}</Card.Subtitle>
-              <Card.Text>
-                {item.problemDescription}
-                
-              </Card.Text>
-               <Card.Text>דחיפות: {priorityLabels[item.priority as PriorityType] || "לא הוגדרה"}</Card.Text> 
-            </Card.Body>
-          </Card>
-        </Col>
-      ))}
-    </Row>
-  </div>;
+  return (
+    <div className="Home m-4">
+      <Button variant="danger w-100 mb-4 ">הוספת קריאה</Button>
+      <Row className="g-4">
+        {listRequest &&
+          listRequest.map((item) => (
+            <Col key={item._id} xs={12} sm={6} md={3}>
+              <Card className="h-100 shadow-sm">
+                <Card.Body>
+                  <Card.Title>קריאה {item._id}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">
+                    מיקום: {item.location.name}
+                  </Card.Subtitle>
+                  <Card.Text>{item.problemDescription}</Card.Text>
+                  <Card.Text>
+                    דחיפות:{item.priority || 'לא נקבעה'}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+      </Row>
+    </div>
+  );
 };
 
-  
-  // peopleStuck
-  // status
-  // contactPhone
-  // location
- 
-
+// peopleStuck
+// status
+// contactPhone
+// location
 
 export default Home;

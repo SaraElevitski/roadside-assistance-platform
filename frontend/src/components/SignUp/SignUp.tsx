@@ -56,7 +56,7 @@ const validateIsraeliId = (id: string | number): boolean => {
       email: yup
         .string()
         .email("כתובת האימייל אינה תקינה").required("שדה חובה"),
-      phone: yup.string().required("שדה חובה"),
+      phone: yup.string().required("שדה חובה").matches(/^[0-9+\- ]+$/, 'טלפון לא תקין'),
     }),
   });
 
