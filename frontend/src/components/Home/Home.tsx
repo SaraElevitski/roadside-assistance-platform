@@ -6,9 +6,8 @@ import helpRequestsService from "../../services/helpRequests.service";
 import type { Volunteer } from "../../models/volunteers.model";
 import { priorityLabels } from "../../models/helpRequest.model";
 
-/* צריך : מחיקת מתנדב
-עדכון מתנדב
-*/
+
+
 
 
 interface HomeProps {}
@@ -16,6 +15,7 @@ interface HomeProps {}
 const Home: FC<HomeProps> = () => {
   const [listVolunteers, setListVolunteers] = useState<Volunteer[]>([]);
   const [listRequest, setListRequests] = useState<any[]>([]);
+
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -35,6 +35,11 @@ const Home: FC<HomeProps> = () => {
     fetchAllData();
   }, []);
 
+
+ const assign = ()=>{
+
+ }
+
   return (
     <div className="Home m-4">
       <Button variant="danger w-100 mb-4 ">הוספת קריאה</Button>
@@ -52,6 +57,8 @@ const Home: FC<HomeProps> = () => {
                   <Card.Text>
                    דחיפות: {item.priority ? (priorityLabels[item.priority] || 'לא ידועה') : 'לא נקבעה'}
                   </Card.Text>
+                  
+                  <Button className="bg-light border-warning text-black" onClick ={()=> assign()} ><Card.Text >{item.status ?  item.status : 'לא ידוע'}</Card.Text></Button>
                 </Card.Body>
               </Card>
             </Col>

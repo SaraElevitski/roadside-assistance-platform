@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 // מייבאים את שני מערכי המילים הפשוטים והטיפוסים מהמודל
 import {
   type HelpRequest,
-  requestStatusesLabels,
+ALL_STATUSES,
   priorityLabels,
 } from "../../models/helpRequest.model";
 
@@ -39,8 +39,8 @@ const NewRequestModal: FC<NewRequestModalProps> = () => {
         .required("שדה חובה")
         .matches(/^[0-9+\- ]+$/, "טלפון לא תקין"),
       status: yup
-        .number()
-        .oneOf(Object.keys(requestStatusesLabels).map(Number), "סטטוס לא תקין")
+        .string()
+        .oneOf(ALL_STATUSES, "סטטוס לא תקין")
         .required("שדה חובה"),
       peopleStuck: yup
         .number()
@@ -182,11 +182,10 @@ const NewRequestModal: FC<NewRequestModalProps> = () => {
                     }
                   >
                     <option value="">בחר סטטוס</option>
-                    {Object.entries(requestStatusesLabels).map(
-                      ([key, value]) => (
-                        <option key={key} value={key}>
-                          {value} {/* מציג פשוט את המילה הגולמית מהמערך */}
-                        </option>
+{ALL_STATUSES.map((status) => (
+  <option key={status} value={status}>
+    {status}
+  </option>
                       ),
                     )}
                   </Form.Select>

@@ -4,7 +4,7 @@ export interface HelpRequest {
   location: RequestLocation;
   problemDescription: string;
   contactPhone: string;
-  status: number | '';
+  status: string | '';
   peopleStuck: number | '';
   priority: number | '';
   volunteerCode: string;
@@ -16,13 +16,9 @@ export interface RequestLocation {
 }
 
 
+export type RequestStatus = 'ממתין' | 'בטיפול' | 'הסתיים';
 
-export const requestStatusesLabels: Record<number, string> ={
-  1:'ממתין',
-2:'בטיפול',
-3:'הסתיים'
-}
-
+export const ALL_STATUSES: RequestStatus[] = ['ממתין', 'בטיפול', 'הסתיים'];
 
 export const priorityLabels: Record<number, string> = {
   1: 'נמוכה',
