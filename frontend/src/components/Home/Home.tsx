@@ -17,8 +17,8 @@ const Home: FC<HomeProps> = () => {
             <Carousel.Item>
               <img
                 className="d-block w-100"
-                src="/help1.jpg"
-                alt="help1.jpg"
+                 src="/help4.jpg"
+                alt="help4.jpg"
               />
               <Carousel.Caption>
                 <h5>First slide label</h5>
@@ -50,8 +50,8 @@ const Home: FC<HomeProps> = () => {
             <Carousel.Item>
               <img
                 className="d-block w-100"
-                src="/help4.jpg"
-                alt="help4.jpg"
+               src="/help1.jpg"
+                alt="help1.jpg"
               />
               <Carousel.Caption>
                 <h5>Theard slide label</h5>

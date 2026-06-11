@@ -1,18 +1,24 @@
-import type { FC } from 'react';
-import './SignUp.scss';
+import { useState, type FC } from "react";
+import "./VolunteerForm.scss";
 import { Form, Button, Card, Container, Col, Row } from "react-bootstrap";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import type { Volunteer } from "../../models/volunteers.model";
-import volunteersService from '../../services/volunteers.service';
+import volunteersService from "../../services/volunteers.service";
+import { useDispatch, useSelector } from "react-redux";
+import { userDetails } from "../../redux/slices/userSlice";
 
-interface SignUpProps {}
+interface VolunteerFormProps {
+  isEdit: boolean;
+  volunteer?: Volunteer;
+}
 
-// צר
-const SignUp: FC<SignUpProps> = () => {
+const VolunteerForm: FC<VolunteerFormProps> = ({ isEdit, volunteer }) => {
+  const dispatch = useDispatch();
+  const [editMode, setEditMode] = useState<boolean>(isEdit);
+  const user = useSelector((state: any) => state.user.user?.data);
 
-
-const validateIsraeliId = (id: string | number): boolean => {
+  const validateIsraeliId = (id: string | number): boolean => {
     const strId = String(id).trim();
     if (!strId || strId.length > 9 || isNaN(Number(strId))) return false;
 
@@ -34,7 +40,7 @@ const validateIsraeliId = (id: string | number): boolean => {
   };
 
   const myForm = useFormik<Omit<Volunteer, "_id">>({
-    initialValues: {
+    initialValues: volunteer || {
       firstName: "",
       lastName: "",
       tz: "",
@@ -43,8 +49,15 @@ const validateIsraeliId = (id: string | number): boolean => {
       specialties: [],
     },
     onSubmit: async (value) => {
-      const v = await volunteersService.createVolunteer(value);
-      alert(`המתנדב נשמר בהצלחה הקוד הוא: ${v.data.data._id}`)
+      if (!editMode) {
+        const v = await volunteersService.createVolunteer(value);
+        alert(`המתנדב נשמר בהצלחה הקוד הוא: ${v.data.data._id}`);
+      } else {
+        console.log(`  ${value.email} 'המייל הוא`)
+        const v = await volunteersService.updateVolunteer(user._id, value);
+        alert(`הפרטים  עודכנו בהצלחה , תזכורת! הקוד הוא: ${v.data.data._id}`);
+        dispatch(userDetails(v.data));
+      }
     },
 
     validationSchema: yup.object().shape({
@@ -57,19 +70,23 @@ const validateIsraeliId = (id: string | number): boolean => {
         }),
       email: yup
         .string()
-        .email("כתובת האימייל אינה תקינה").required("שדה חובה"),
-      phone: yup.string().required("שדה חובה").matches(/^[0-9+\- ]+$/, 'טלפון לא תקין'),
+        .email("כתובת האימייל אינה תקינה")
+        .required("שדה חובה"),
+      phone: yup
+        .string()
+        .required("שדה חובה")
+        .matches(/^[0-9+\- ]+$/, "טלפון לא תקין"),
     }),
   });
 
-
- return <div className="SignUp">
-    <Container className="mt-5">
+  return (
+    <div className="VolunteerForm">
+      <Container className="mt-5">
         <Card
           className="shadow-sm p-4 bg-light m-auto"
           style={{ maxWidth: "550px" }}
         >
-          <h3 className="mb-4 text-center">הוספת מתנדב חדש</h3>
+          <h3 className="mb-4 text-center">{editMode ? "עדכון פרטים " : "מתנדב חדש"} </h3>
           <Form onSubmit={myForm.handleSubmit}>
             <Row>
               <Col md={6}>
@@ -82,7 +99,9 @@ const validateIsraeliId = (id: string | number): boolean => {
                     name="firstName"
                     type="text"
                     placeholder="שם פרטי"
-                    isInvalid={!!(myForm.touched.firstName && myForm.errors.firstName)}
+                    isInvalid={
+                      !!(myForm.touched.firstName && myForm.errors.firstName)
+                    }
                   />
                   <Form.Control.Feedback type="invalid">
                     {myForm.errors.firstName}
@@ -100,7 +119,9 @@ const validateIsraeliId = (id: string | number): boolean => {
                     name="lastName"
                     type="text"
                     placeholder="שם משפחה"
-                    isInvalid={!!(myForm.touched.lastName && myForm.errors.lastName)}
+                    isInvalid={
+                      !!(myForm.touched.lastName && myForm.errors.lastName)
+                    }
                   />
                   <Form.Control.Feedback type="invalid">
                     {myForm.errors.lastName}
@@ -111,25 +132,32 @@ const validateIsraeliId = (id: string | number): boolean => {
 
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>אימייל</Form.Label>
-              <Form.Control type="email" placeholder="name@example.com" 
-              onChange={myForm.handleChange}  
-              onBlur={myForm.handleBlur}
-                    name="email"
-                    isInvalid={!!(myForm.touched.email && myForm.errors.email)}/>
-                      <Form.Control.Feedback type="invalid">
-                    {myForm.errors.email}
-                  </Form.Control.Feedback>
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                onChange={myForm.handleChange}
+                onBlur={myForm.handleBlur}
+                value={myForm.values.email}
+                name="email"
+                isInvalid={!!(myForm.touched.email && myForm.errors.email)}
+              />
+              <Form.Control.Feedback type="invalid">
+                {myForm.errors.email}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="phone">
                   <Form.Label>טלפון</Form.Label>
-                  <Form.Control type="tel" onChange={myForm.handleChange}
-                  onBlur={myForm.handleBlur}
+                  <Form.Control
+                    type="tel"
+                    onChange={myForm.handleChange}
+                    onBlur={myForm.handleBlur}
                     value={myForm.values.phone}
                     name="phone"
-                       isInvalid={!!(myForm.touched.phone && myForm.errors.phone)}/>
+                    isInvalid={!!(myForm.touched.phone && myForm.errors.phone)}
+                  />
                   <Form.Control.Feedback type="invalid">
                     {myForm.errors.phone}
                   </Form.Control.Feedback>
@@ -139,12 +167,15 @@ const validateIsraeliId = (id: string | number): boolean => {
               <Col md={6}>
                 <Form.Group className="mb-3" controlId="phone">
                   <Form.Label>תעודת זהות</Form.Label>
-                  <Form.Control type="text" onChange={myForm.handleChange}
-                  onBlur={myForm.handleBlur}
+                  <Form.Control
+                    type="text"
+                    onChange={myForm.handleChange}
+                    onBlur={myForm.handleBlur}
                     value={myForm.values.tz}
                     name="tz"
-                    isInvalid={!!(myForm.touched.tz && myForm.errors.tz)}/>
-                     <Form.Control.Feedback type="invalid">
+                    isInvalid={!!(myForm.touched.tz && myForm.errors.tz)}
+                  />
+                  <Form.Control.Feedback type="invalid">
                     {myForm.errors.tz}
                   </Form.Control.Feedback>
                 </Form.Group>
@@ -157,12 +188,13 @@ const validateIsraeliId = (id: string | number): boolean => {
             </Form.Group>
 
             <Button variant="primary" type="submit" className="w-100">
-              שמירה
+              {isEdit ? "עדכון הנתונים" : "שמירה"}
             </Button>
           </Form>
         </Card>
       </Container>
-  </div>
-}
+    </div>
+  );
+};
 
-export default SignUp;
+export default VolunteerForm;

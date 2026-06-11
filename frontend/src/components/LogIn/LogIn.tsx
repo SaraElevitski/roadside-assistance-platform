@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import { Form, Button, Card, Container } from "react-bootstrap";
 import volunteersService from "../../services/volunteers.service";
 import { useDispatch } from "react-redux";
-import { logInUser } from "../../redux/slices/userSlice";
+import { userDetails } from "../../redux/slices/userSlice";
 
 interface LogInProps {}
 
@@ -22,7 +22,7 @@ const LogIn: FC<LogInProps> = () => {
         const res = await volunteersService.loginVolunteer(value);
         if (res) {
           alert("הכניסה בוצעה!");
-          dispatch(logInUser(res.data));
+          dispatch(userDetails(res.data));
         }
       } catch (error: any) {
         alert("המשתמש לא נמצא הרשם");

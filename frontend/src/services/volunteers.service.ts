@@ -13,7 +13,7 @@ export default new (class VolunteersService {
   }
 
   // עדכון מתנדב
-  updateVolunteer(id: string, data: Volunteer) {
+  updateVolunteer(id: string, data: Omit<Volunteer, "_id">) {
     return axios.put(`http://127.0.0.1:8080/api/volunteers/${id}`, data);
   }
 
