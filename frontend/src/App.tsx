@@ -7,10 +7,13 @@ import VolunteerForm from "./components/VolunteerForm/VolunteerForm";
 import ManagingVolunteers from "./components/ManagingVolunteers/ManagingVolunteers";
 import HelpRequests from "./components/HelpRequests/HelpRequests";
 import Profile from "./components/Profile/Profile";
+import Message from "./components/Message/Message";
+
 
 function App() {
   return (
     <>
+    <Message></Message>
       <Routes>
         <Route path="/" element={<MainComp></MainComp>}>
           <Route
@@ -30,6 +33,7 @@ function App() {
           <Route path="profile" element={<Profile></Profile>}></Route>
         </Route>
 
+        
         {/* <Route path='*' element={<NotFound></NotFound>}></Route> */}
       </Routes>
     </>

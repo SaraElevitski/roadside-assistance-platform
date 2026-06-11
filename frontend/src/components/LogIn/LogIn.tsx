@@ -6,11 +6,14 @@ import { Form, Button, Card, Container } from "react-bootstrap";
 import volunteersService from "../../services/volunteers.service";
 import { useDispatch } from "react-redux";
 import { userDetails } from "../../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
+import { setMessage } from "../../redux/slices/messageSlice";
 
 interface LogInProps {}
 
 const LogIn: FC<LogInProps> = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const myForm = useFormik({
     initialValues: {
@@ -21,8 +24,9 @@ const LogIn: FC<LogInProps> = () => {
       try {
         const res = await volunteersService.loginVolunteer(value);
         if (res) {
-          alert("הכניסה בוצעה!");
           dispatch(userDetails(res.data));
+          dispatch(setMessage({ text: "שלום מתנדב יקר", type: "primary" }));
+          navigate("/helpRequests")
         }
       } catch (error: any) {
         alert("המשתמש לא נמצא הרשם");

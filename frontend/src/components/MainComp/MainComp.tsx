@@ -20,7 +20,7 @@ const MainComp: FC<MainCompProps> = () => {
     <div className="MainComp ">
       <Navbar bg="primary" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand>עזרה בדרכים🛣️</Navbar.Brand>
+          <Navbar.Brand> <i className="bi bi-car-front">עזרה בדרכים</i></Navbar.Brand>
           <strong className="text-light"> שלום {user?.firstName}</strong>
           <Nav className="me-auto">
             {user ? (
@@ -46,9 +46,9 @@ const MainComp: FC<MainCompProps> = () => {
             <Nav.Link as={NavLink} to="/VolunteerForm">
               הרשמה
             </Nav.Link>
-            {/* <Nav.Link as={NavLink} to="/profile"> */}
+ 
               <Button variant="primary" onClick={handleShow}><i className="bi bi-person-circle"></i></Button>
-            {/* </Nav.Link> */}
+           
           </Nav>
         </Container>
       </Navbar>

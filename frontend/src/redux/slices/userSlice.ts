@@ -13,12 +13,9 @@ const userSlice = createSlice({
     },
     logOutUser: (state) => {
       state.user = null;
-    },
-    setMessage: (state, action: PayloadAction<string>) => {
-      state.message = action.payload;
-    },
+    }
   },
 });
 
 export default userSlice;
-export const { userDetails, logOutUser, setMessage } = userSlice.actions;
+export const { userDetails, logOutUser } = userSlice.actions;
