@@ -1,5 +1,6 @@
 const Controller = require('./Controller.js');
 const requestService = require('../../services/request.service.js');
+const volunteerService = require('../../services/volunteer.service.js');
 
 
 class RequestController extends Controller {
@@ -16,7 +17,11 @@ class RequestController extends Controller {
 
             const { volunteerCode, status } = req.body;
 
-            const result = await requestService.assignVolunteerToRequest(id, volunteerCode, status);
+            
+            const voluntter = await volunteerService.findOne({ _id: volunteerCode })
+            const isAdmin = voluntter ? (voluntter.data?.role === "admin") : false;
+            console.log("Structure of volunteer object:", JSON.stringify(voluntter, null, 2));
+            const result = await requestService.assignVolunteerToRequest(id, volunteerCode, status, isAdmin);
 
 
             return res.status(200).json(result);

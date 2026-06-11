@@ -33,7 +33,7 @@ export default new class HelpRequestService {
 
 
     // התאמת מתנדב לקריאה
-    assignVolunteer(id: string, volunteerCode: string, status: string) {
+    assignVolunteer(id: number, volunteerCode: string, status: string) {
         return axios.put(`http://127.0.0.1:8080/api/requests/${id}/assign`, {
             volunteerCode,
             status

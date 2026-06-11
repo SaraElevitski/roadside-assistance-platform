@@ -7,6 +7,8 @@ class VolunteerService extends Service {
     }
 
 
+
+    // volunteer.service.js
     async create(data) {
         const newData = {}
         if (data.firstName)
@@ -49,7 +51,6 @@ class VolunteerService extends Service {
         }
         return newCode;
     }
-
 
 }
 

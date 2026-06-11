@@ -7,7 +7,8 @@ const VolunteerSchema = new mongoose.Schema({
   tz: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  specialties: [String]
+  specialties: [String],
+  role: {type: String}
 });
 
 module.exports = mongoose.model('volunteers', VolunteerSchema);

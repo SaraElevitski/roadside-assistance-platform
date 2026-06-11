@@ -15,6 +15,7 @@ const MainComp: FC<MainCompProps> = () => {
           <Navbar.Brand >עזרה בדרכים🛣️</Navbar.Brand>
           <strong className="text-light"> שלום {user?.firstName}</strong>
           <Nav className="me-auto">
+            {user? (user.role == "admin" ? <Nav.Link  as={NavLink} to="/ManagingVolunteers">ניהול מתנדבים</Nav.Link> : ''):''}
          <Nav.Link  as={NavLink} to="/">בית</Nav.Link>
             <Nav.Link as={NavLink} to="/login">כניסה</Nav.Link>
             <Nav.Link as={NavLink} to="/signUp">הרשמה</Nav.Link>

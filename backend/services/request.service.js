@@ -18,17 +18,8 @@ class RequestService extends Service {
     }
 
     
-    async assignVolunteerToRequest(requestId, volunteerCode, newStatus) {
-        const volunteer = await this.volunteerRepo.findOne({ _id: volunteerCode });
-        //האם המתנדב קיים
-        if (!volunteer) {
-            const error = new Error("the volunteer not found");
-            error.statusCode = 404;
-            throw error;
-        }
-        //---------------------------- הוספתי זה בשביל לסדר שאם בכלל הבקשה לא קיימת שגיאה 
-        // וכדי שרק מי שלקח את הבקשה יכול לסיים אותה אז לבדוק שהקוד מתנדב בבקשה כמו הקוד שמכניסים עכשיו כדי ללעדכן\ לסיים
-        // האם הבקשה קיימת
+    async assignVolunteerToRequest(requestId, volunteerCode, newStatus, isAdmin) {
+        
         const currentRequest = await this.repo.getById(requestId);
         if (!currentRequest) {
             const error = new Error("request not found");
@@ -36,21 +27,22 @@ class RequestService extends Service {
             throw error;
         }
 
-        // 3.   אם הסטטוס הוא 'הסתיים', נוודא שזה אותו מתנדב
-        if (newStatus === 'הסתיים') {
-            if (currentRequest.volunteerCode !== volunteerCode) {
-                const error = new Error("Only the volunteer associated with the request can complete it.");
-                error.statusCode = 403;
-                throw error;
-            }
-        }
-        const data = {
-            volunteerCode: volunteerCode,
-            status: newStatus
-        }
+        const data = { status: newStatus };
 
-        const requestUpdate = await this.repo.update(requestId, data)
-        return requestUpdate
+    if (!isAdmin ) {
+        data.volunteerCode = volunteerCode;
+    }
+
+      if (!isAdmin  && currentRequest.volunteerCode !== volunteerCode) {
+    const error = new Error("Only the volunteer associated with the request can complete it.");
+    error.statusCode = 403;
+    throw error;
+}
+
+const requestUpdate = await this.repo.update(requestId, data);
+return requestUpdate
+
+        
     }
 }
 

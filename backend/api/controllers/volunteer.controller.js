@@ -6,6 +6,7 @@ class VolunteersController extends Controller {
     constructor() {
         super(volunteerService)
     }
+    
 }
 
 module.exports = new VolunteersController();

@@ -1,6 +1,6 @@
 
 export interface HelpRequest {
-   _id: number | '';
+   _id: number ;
   location: RequestLocation;
   problemDescription: string;
   contactPhone: string;

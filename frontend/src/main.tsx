@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { combineSlices, configureStore } from '@reduxjs/toolkit'
 import userSlice from './redux/slices/userSlice.ts'
 import { Provider } from 'react-redux';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 
 const myStore=configureStore({reducer:combineSlices(userSlice)})
