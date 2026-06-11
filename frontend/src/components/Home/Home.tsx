@@ -1,78 +1,76 @@
-import { useEffect, useState, type FC } from "react";
+import { type FC } from "react";
 import "./Home.scss";
-import helpRequestsService from "../../services/helpRequests.service";
-import { Row, Col, Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import RequestCard from "../RequestCard/RequestCard";
-import type { HelpRequest } from "../../models/helpRequest.model";
+import { Row, Col, Carousel } from "react-bootstrap";
 
 interface HomeProps {}
 
 const Home: FC<HomeProps> = () => {
-  const [listRequest, setListRequests] = useState<any[]>([]);
-  const user = useSelector((state: any) => state.user.user?.data);
-
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        const [requestsRes] = await Promise.all([
-          helpRequestsService.getRequestsList(),
-        ]);
-        setListRequests(requestsRes.data.data);
-      } catch (error) {
-        // setError("חלק מהנתונים לא נטענו בהצלחה");
-      }
-    };
-    fetchAllData();
-  }, []);
-
-  const deleteRequest = async (id: string) => {
-    const item = await helpRequestsService.deleteRequest(id);
-    if (item) alert("המתנדב נמחק בהצלחה");
-    else alert("שגיאה במחיקה");
-  };
-
-  const assign = async (item: HelpRequest) => {
-  // 1. קביעת הסטטוס החדש
-  const newStatus = item.status === "בטיפול" ? "הסתיים" : "בטיפול";
-
-  try {
-    // 2. קריאה לשרת
-    const res = await helpRequestsService.assignVolunteer(item._id, user._id, newStatus);
-
-    if (res) {
-      // 3. עדכון ה-State של הרשימה
-      setListRequests(prevList => 
-        prevList.map(req => 
-          // אם זה הכרטיס ששינינו - נחליף לו את הסטטוס, אחרת נשאיר אותו כמו שהוא
-          req._id === item._id ? { ...req, status: newStatus } : req
-        )
-      );
-    }
-  } catch (error) {
-    
-    alert("שגיאה בעדכון הסטטוס");
-  }
-};
-
-
   return (
-    <div className="Home m-4">
-      <Button variant="danger" className="w-100 mb-4">
-        הוספת קריאה
-      </Button>
-      <Row className="g-4 align-items-stretch">
-        {listRequest &&
-          listRequest.map((item) => (
-            <Col key={item._id} xs={12} sm={6} md={3} className="d-flex">
-              <RequestCard
-                item={item}
-                user={user}
-                onDeleteRequest={deleteRequest}
-                onAssign={assign}
+    <div className="Home p-4">
+      <div className="text-center mb-4">
+        <h2>שלום לאתר שלנו</h2>
+      </div>
+
+      <Row className="justify-content-center">
+        <Col xs={12} md={6}>
+          <Carousel data-bs-theme="dark">
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="/help1.jpg"
+                alt="help1.jpg"
               />
-            </Col>
-          ))}
+              <Carousel.Caption>
+                <h5>First slide label</h5>
+                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="/help2.jpeg"
+                alt="help2.jpeg"
+              />
+              <Carousel.Caption>
+                <h5>Second slide label</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="/help3.jpg"
+                alt="help3.jpg"
+              />
+              <Carousel.Caption>
+                <h5>Second slide label</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="/help4.jpg"
+                alt="help4.jpg"
+              />
+              <Carousel.Caption>
+                <h5>Theard slide label</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+            <Carousel.Item>
+              <img
+                className="d-block w-100"
+                src="/help5.jpg"
+                alt="help5.jpg"
+              />
+              <Carousel.Caption>
+                <h5>Theard slide label</h5>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              </Carousel.Caption>
+            </Carousel.Item>
+          </Carousel>
+        </Col>
       </Row>
     </div>
   );
